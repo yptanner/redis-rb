@@ -24,7 +24,7 @@ class Redis
     def add_node(node)
       @nodes << node
       @replicas.times do |i|
-        key = MurmurHash3::V32.str_hash("#{node.id}:#{i}")
+        key = MurmurHash3::V32.str_hash("SHARD-#{node.id}-NODE-#{i}")
         @ring[key] = node
         @sorted_keys << key
       end

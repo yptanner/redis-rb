@@ -1,5 +1,5 @@
-require 'zlib'
-
+#require 'zlib'
+require 'MurmurHash3'
 class Redis
   class HashRing
 
@@ -24,7 +24,7 @@ class Redis
     def add_node(node)
       @nodes << node
       @replicas.times do |i|
-        key = Zlib.crc32("#{node.id}:#{i}")
+        key = MurmurHash3::V32.str_hash("#{node.id}:#{i}")
         @ring[key] = node
         @sorted_keys << key
       end
@@ -34,7 +34,7 @@ class Redis
     def remove_node(node)
       @nodes.reject!{|n| n.id == node.id}
       @replicas.times do |i|
-        key = Zlib.crc32("#{node.id}:#{i}")
+        key = MurmurHash3::V32.str_hash("#{node.id}:#{i}")
         @ring.delete(key)
         @sorted_keys.reject! {|k| k == key}
       end
@@ -47,7 +47,7 @@ class Redis
 
     def get_node_pos(key)
       return [nil,nil] if @ring.size == 0
-      crc = Zlib.crc32(key)
+      crc = MurmurHash3::V32.str_hash(key)
       idx = HashRing.binary_search(@sorted_keys, crc)
       return [@ring[@sorted_keys[idx]], idx]
     end

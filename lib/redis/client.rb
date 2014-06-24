@@ -91,7 +91,7 @@ class Redis
     end
 
     def id
-      @options[:id] || "redis://#{location}/#{db}"
+      @options[:id] || (port - 10001).to_s
     end
 
     def location

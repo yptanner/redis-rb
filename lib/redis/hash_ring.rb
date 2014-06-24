@@ -34,7 +34,7 @@ class Redis
     def remove_node(node)
       @nodes.reject!{|n| n.id == node.id}
       @replicas.times do |i|
-        key = Digest::MurmurHash2.digest("#{node.id}:#{i}")
+        key = Digest::MurmurHash2.digest("SHARD-#{node.id}-NODE-#{i}")
         @ring.delete(key)
         @sorted_keys.reject! {|k| k == key}
       end

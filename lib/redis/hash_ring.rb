@@ -1,5 +1,4 @@
-require 'pry'
-require 'digest/murmurhash'
+require 'MurmurHash3'
 class Redis
   class HashRing
 
@@ -24,7 +23,7 @@ class Redis
     def add_node(node)
       @nodes << node
       @replicas.times do |i|
-        key = Digest::MurmurHash64A.digest("SHARD-#{node.id}-NODE-#{i}")
+        key = MurmurHash3::V32.str_hash("SHARD-#{node.id}-NODE-#{i}", 123456)
         @ring[key] = node
         @sorted_keys << key
       end
@@ -34,7 +33,7 @@ class Redis
     def remove_node(node)
       @nodes.reject!{|n| n.id == node.id}
       @replicas.times do |i|
-        key = Digest::MurmurHash64A.digest("SHARD-#{node.id}-NODE-#{i}")
+        key = MurmurHash3::V32.str_hash("SHARD-#{node.id}-NODE-#{i}", 123456)
         @ring.delete(key)
         @sorted_keys.reject! {|k| k == key}
       end
@@ -47,7 +46,7 @@ class Redis
 
     def get_node_pos(key)
       return [nil,nil] if @ring.size == 0
-      crc = Digest::MurmurHash64A.digest(key)
+      crc = MurmurHash3::V32.str_hash(key, 123456)
       idx = HashRing.binary_search(@sorted_keys, crc)
       return [@ring[@sorted_keys[idx]], idx]
     end

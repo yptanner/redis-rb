@@ -1,7 +1,6 @@
 # encoding: utf-8
 source 'https://rubygems.org'
 
-gem 'digest-murmurhash'
-gem 'pry'
+gem 'MurmurHash3'
 
 gemspec

@@ -1,6 +1,6 @@
 # encoding: utf-8
 source 'https://rubygems.org'
 
-gem 'MurmurHash3'
+gem 'murmurhash3'
 
 gemspec

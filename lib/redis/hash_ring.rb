@@ -1,4 +1,4 @@
-require 'MurmurHash3'
+require 'murmurhash3'
 class Redis
   class HashRing
 
@@ -23,7 +23,7 @@ class Redis
     def add_node(node)
       @nodes << node
       @replicas.times do |i|
-        key = MurmurHash3::V32.str_hash("SHARD-#{node.id}-NODE-#{i}", 123456)
+        key = MurmurHash3::V32.str_hash("SHARD-#{node.compatible_id}-NODE-#{i}", 123456)
         @ring[key] = node
         @sorted_keys << key
       end
@@ -33,7 +33,7 @@ class Redis
     def remove_node(node)
       @nodes.reject!{|n| n.id == node.id}
       @replicas.times do |i|
-        key = MurmurHash3::V32.str_hash("SHARD-#{node.id}-NODE-#{i}", 123456)
+        key = MurmurHash3::V32.str_hash("SHARD-#{node.compatible_id}-NODE-#{i}", 123456)
         @ring.delete(key)
         @sorted_keys.reject! {|k| k == key}
       end

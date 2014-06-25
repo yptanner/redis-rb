@@ -40,5 +40,5 @@ Gem::Specification.new do |s|
   s.executables   = `git ls-files -- bin/*`.split("\n").map{ |f| File.basename(f) }
 
   s.add_development_dependency("rake")
-  s.add_dependency('MurmurHash3')
+  s.add_dependency('murmurhash3')
 end

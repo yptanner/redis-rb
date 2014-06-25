@@ -2472,7 +2472,9 @@ class Redis
   def id
     @original_client.id
   end
-
+  def compatible_id
+    @original_client.compatible_id
+  end
   def inspect
     "#<Redis client v#{Redis::VERSION} for #{id}>"
   end

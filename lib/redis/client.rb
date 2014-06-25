@@ -91,9 +91,11 @@ class Redis
     end
 
     def id
-      @options[:id] || (port - 10001).to_s
+      @options[:id] || "redis://#{location}/#{db}"
     end
-
+    def compatible_id
+      (port - 10001).to_s
+    end
     def location
       path || "#{host}:#{port}"
     end

@@ -23,7 +23,7 @@ class Redis
     def add_node(node)
       @nodes << node
       @replicas.times do |i|
-        key = MurmurHash3::V32.str_hash("SHARD-#{node.compatible_id}-NODE-#{i}", 123456)
+        key = MurmurHash3::V32.str_hash("SHARD-#{node.compatible_id}-NODE-#{i}", 50369969)
         @ring[key] = node
         @sorted_keys << key
       end
@@ -33,7 +33,7 @@ class Redis
     def remove_node(node)
       @nodes.reject!{|n| n.id == node.id}
       @replicas.times do |i|
-        key = MurmurHash3::V32.str_hash("SHARD-#{node.compatible_id}-NODE-#{i}", 123456)
+        key = MurmurHash3::V32.str_hash("SHARD-#{node.compatible_id}-NODE-#{i}", 50369969)
         @ring.delete(key)
         @sorted_keys.reject! {|k| k == key}
       end
@@ -46,7 +46,7 @@ class Redis
 
     def get_node_pos(key)
       return [nil,nil] if @ring.size == 0
-      crc = MurmurHash3::V32.str_hash(key, 123456)
+      crc = MurmurHash3::V32.str_hash(key, 50369969)
       idx = HashRing.binary_search(@sorted_keys, crc)
       return [@ring[@sorted_keys[idx]], idx]
     end
